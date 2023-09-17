@@ -35,7 +35,7 @@ function createTemperature(weatherData) {
   return { ...weatherData, convertToF, convertToC, convert}
 }
 
-function createPrecipitation (weatherData, precipitationType) {
+function createPrecipitation(weatherData, precipitationType) {
   Object.setPrototypeOf(this, weatherData)
 
   const getPrecipitationType = () => precipitationType
@@ -90,3 +90,5 @@ function createCloudCoverage(weatherData) {
 
   return { ...weatherData }
 }
+
+module.exports = {createWeatherData, createTemperature, createPrecipitation, createWind, createCloudCoverage}

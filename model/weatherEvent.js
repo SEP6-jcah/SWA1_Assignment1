@@ -6,3 +6,5 @@ function createEvent(time, place) {
 
   return { getTime, getPlace, toString, equals }
 }
+
+module.exports = {createEvent}

@@ -2,12 +2,61 @@
 <html>
   <head>
     <title>Weather in Århus</title>
+    <script type='module'>
+      import view from './index.js'
+      import model from './model.js'
+
+      const LOG = (message) => console.log(message)
+
+      function display(_view, temperature, precipitation, wind, cloud) {
+        const _model = model({temperature, precipitation, wind, cloud})
+        _view.update(_model)
+      }
+
+      window.init = async function () {
+        const _view = view(window)
+
+        try {
+          const response = await fetch('http://localhost:8080/data')
+
+          if(!response.ok) {
+            LOG(`Error: ${response.statusText}`)
+            // throw response.statusText
+          }
+
+          const weatherData = await response.json()
+
+          let temperatureData, precipitationData, windData, cloudData
+          [temperatureData, precipitationData, windData, cloudData] = weatherData
+
+          display(_view, temperatureData, precipitationData, windData, cloudData)
+        }
+        catch (e) {
+          LOG(`window.init: ${e}`)
+          _view.displayError(e)
+        }
+      }
+
+      init()
+
+    </script>
   </head>
-  <body>
-    <div>
+
+  <body onload="init">
+    <div id="base">
       <h1>Århus</h1>
-      <p></p>
+      <table>
+        <thead>
+          <tr>
+            <td>Temperature</td>
+            <td>Precipitation</td>
+            <td>Wind</td>
+            <td>Cloud</td>
+          </tr>
+        </thead>
+        <tbody id='dataTable'></tbody>
+      </table>
+      <p id='error'></p>
     </div>
-    <script src="server.js"></script>
   </body>
 </html>

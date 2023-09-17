@@ -105,3 +105,5 @@ function createCloudCoveragePrediction(weatherPrediction) {
 
   return { ...weatherPrediction }
 }
+
+module.exports = {createWeatherPrediction, createTemperaturePrediction, createPrecipitationPrediction, createWindPrediction, createCloudCoveragePrediction}
