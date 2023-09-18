@@ -1,8 +1,11 @@
 const hourlyForecastDiv = document.getElementById('hourlyForecast');
+const weatherDataButton = document.getElementById('weatherDataButton');
+const hourSelector = document.getElementById('hourSelector');
+const citySelector = document.getElementById('city');
 let selectedHour = null;
 
 function fetchWeatherData() {
-    fetch(`http://localhost:8080/forecast/${citySelector.value? citySelector.value : 'Aarhus'}`)
+    fetch(`http://localhost:8080/forecast/${citySelector.value}`)
     .then(response => response.json())
     .then(data => {
         displayHourlyForecast(data, selectedHour? selectedHour : new Date().getHours());  
@@ -20,17 +23,18 @@ function displayHourlyForecast(data, selectedHour) {
     hourlyForecastDiv.textContent = jsonString;
 }
 
-const hourSelector = document.getElementById('hourSelector');
-
 hourSelector.addEventListener('change', () => {
     selectedHour = parseInt(hourSelector.value);
     fetchWeatherData();
 });
 
-const citySelector = document.getElementById('city');
-
 citySelector.addEventListener('change', () => {
     citySelector.value;
+    fetchWeatherData();
+});
+
+weatherDataButton.addEventListener('click', () => {
+    window.location.href = 'weather_data.html';
 });
 
 fetchWeatherData();
