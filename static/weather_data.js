@@ -48,10 +48,11 @@ function updateWeatherData() {
             });
 
             const averageWindSpeed = (windSpeedSum / windSpeedCount).toFixed(2);
+            const totalPrecipitation = totalPrecipitationValue.toFixed(2);
 
             minTemperatureDiv.textContent = `Min Temperature: ${minTemperatureValue} ${temperatureUnit}`;
             maxTemperatureDiv.textContent = `Max Temperature: ${maxTemperatureValue} ${temperatureUnit}`;
-            totalPrecipitationDiv.textContent = `Total Precipitation: ${totalPrecipitationValue} ${precipitationUnit}`;
+            totalPrecipitationDiv.textContent = `Total Precipitation: ${totalPrecipitation} ${precipitationUnit}`;
             averageWindSpeedDiv.textContent = `Average Wind Speed: ${averageWindSpeed} ${windSpeedUnit}`;
         })
         .catch(error => {
