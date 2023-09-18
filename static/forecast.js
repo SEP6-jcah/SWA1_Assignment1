@@ -27,6 +27,8 @@ hourSelector.addEventListener('change', () => {
     fetchWeatherData();
 });
 
+const citySelector = document.getElementById('city');
+
 citySelector.addEventListener('change', () => {
     citySelector.value;
 });
