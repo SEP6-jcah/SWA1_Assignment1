@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Data to Server</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <h1>Send Data to Server</h1>
+    
+    <form id="dataForm">
+
+        <label for="time">Time (UTC):</label>
+        <input type="text" id="time" name="time" required data-input>
+
+        <label for="type">Type:</label>
+        <select id="type" name="type" required>
+            <option value="temperature">Temperature</option>
+            <option value="precipitation">Precipitation</option>
+            <option value="wind speed">Wind Speed</option>
+            <option value="cloud coverage">Cloud Coverage</option>
+        </select>
+
+        <label for="value">Value:</label>
+        <input type="number" id="value" name="value" required>
+<label id="unitLabel">Unit:</label>
+
+        <label for="wind_direction" id="windDirectionLabel">Wind Direction:</label>
+        <select id="wind_direction" name="wind_direction">
+            <option value="North">North</option>
+            <option value="Northeast">Northeast</option>
+            <option value="East">East</option>
+            <option value="Southeast">Southeast</option>
+            <option value="South">South</option>
+            <option value="Southwest">Southwest</option>
+            <option value="West">West</option>
+            <option value="Northwest">Northwest</option>
+        </select>
+
+        <label for="precipitation_type" id="precipitationTypeLabel">Precipitation Type:</label>
+        <select id="precipitation_type" name="precipitation_type">
+            <option value="rain">Rain</option>
+            <option value="sleet">Sleet</option>
+            <option value="hail">Hail</option>
+            <option value="snow">Snow</option>
+        </select>
+
+        <button type="submit">Send Data</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        const dataForm = document.getElementById('dataForm');
+        const timeInput = document.getElementById('time');
+        const typeSelect = document.getElementById('type');
+        const unitInput = document.getElementById('unit');
+        const directionLabel = document.getElementById('directionLabel');
+        const directionInput = document.getElementById('directions');
+        const precipitationTypeLabel = document.getElementById('precipitationTypeLabel');
+        const precipitationTypeSelect = document.getElementById('precipitation_type');
+
+        // Use date picker
+        flatpickr(timeInput, {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i:S",
+            utc: true
+        });
+
+        typeSelect.addEventListener('change', () => {
+            const selectedType = typeSelect.value;
+
+            if (selectedType === 'temperature') {
+                unitInput.value = '°C';
+            } else if (selectedType === 'precipitation') {
+                unitInput.value = 'mm';
+                precipitationTypeLabel.style.display = 'block';
+                precipitationTypeSelect.style.display = 'block';
+            } else if (selectedType === 'wind speed') {
+                unitInput.value = 'm/s';
+                windDirectionLabel.style.display = 'block';
+                windDirectionSelect.style.display = 'block';
+            } else if (selectedType === 'cloud coverage') {
+                unitInput.value = '%';
+            } else {
+                unitInput.value = ''; 
+
+                if (selectedType === 'wind speed') {
+                    directionLabel.style.display = 'block';
+                    directionInput.style.display = 'block';
+                } else {
+                    directionLabel.style.display = 'none';
+                    directionInput.style.display = 'none';
+                }
+
+                if (selectedType !== 'precipitation') {
+                    precipitationTypeLabel.style.display = 'none';
+                    precipitationTypeSelect.style.display = 'none';
+                }
+            }
+        });
+        dataForm.addEventListener('submit', () => {
+            const formData = new FormData(dataForm);
+            const dataToSend = {};
+            formData.forEach((value, key) => {
+                dataToSend[key] = value;
+            });
+
+            fetch('http://localhost:8080/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToSend)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server response:', data);
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+        });
+    </script>
+</body>
+</html>

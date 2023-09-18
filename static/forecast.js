@@ -37,4 +37,8 @@ weatherDataButton.addEventListener('click', () => {
     window.location.href = 'weather_data.html';
 });
 
+weatherFormButton.addEventListener('click', () => {
+    window.location.href = 'weather_form.html';
+    });
+    
 fetchWeatherData();
