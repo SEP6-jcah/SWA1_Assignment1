@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+    <title>Weather Data</title>
+</head>
+<body>
+    <h1>Weather Data</h1>
+    <button id="weatherDataButton">Go to Forecast </button> <!-- Button to navigate to the weather_data page -->
+    <div id="citySelector">
+        <label for="city">Select a City:</label>
+        <select id="city">
+            <option value="Horsens">Horsens</option>
+            <option value="Aarhus">Aarhus</option>
+            <option value="Copenhagen">Copenhagen</option>
+        </select>
+    </div>
+    <!-- Minimum temperature for the last day -->
+    <div id="minTemperature">
+        <!-- Minimum temperature data will be displayed here -->
+    </div>
+    <!-- Maximum temperature for the last day -->
+    <div id="maxTemperature">
+        <!-- Maximum temperature data will be displayed here -->
+    </div>
+    <!-- Total precipitation for the last day -->
+    <div id="totalPrecipitation">
+        <!-- Total precipitation data will be displayed here -->
+    </div>
+    <!-- Average wind speed for the last day -->
+    <div id="averageWindSpeed">
+        <!-- Average wind speed data will be displayed here -->
+    </div>
+
+    <pre id="hourlyForecast">
+        <!-- Weather data will be displayed here -->
+    </pre>
+    <!-- JavaScript code -->
+    <script src="client_model.js"></script>
+    <script src="weather_data.js"></script>
+</body>
+</html>
