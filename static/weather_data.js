@@ -6,16 +6,19 @@ const averageWindSpeedDiv = document.getElementById('averageWindSpeed');
 const hourlyForecastDiv = document.getElementById('hourlyForecast');
 
 function updateWeatherData() {
-    fetch(`http://localhost:8080/data/${citySelector.value}`)
-        .then(response => response.json())
-        .then(data => {
+    const xmlRequest = new XMLHttpRequest();
+    xmlRequest.open('GET', `http://localhost:8080/data/${citySelector.value}`, true);
 
-            const currentDate = new Date();
-            const lastDayData = data.filter(item => {
-                const itemDate = new Date(item.time);
+    xmlRequest.onreadystatechange = function () {
+        if (xmlRequest.readyState === 4) {
+            const data = JSON.parse(xmlRequest.responseText);
+            
+            const today = new Date();
+            const yesterday = data.filter(entry => {
+                const entryData = new Date(entry.time);
                 return (
-                    item.place === citySelector.value &&
-                    (currentDate - itemDate) < 24 * 60 * 60 * 1000
+                    entry.place === citySelector.value 
+                    && (today - entryData) < 24 * 60 * 60 * 1000
                 );
             });
 
@@ -28,21 +31,21 @@ function updateWeatherData() {
             let precipitationUnit = '';
             let windSpeedUnit = '';
 
-            lastDayData.forEach(item => {
-                switch (item.type) {
+            yesterday.forEach(entry => {
+                switch (entry.type) {
                     case 'temperature':
-                        minTemperatureValue = item.value < minTemperatureValue ? item.value : minTemperatureValue;
-                        maxTemperatureValue = item.value > maxTemperatureValue ? item.value : maxTemperatureValue;
-                        temperatureUnit = item.unit;
+                        minTemperatureValue = entry.value < minTemperatureValue ? entry.value : minTemperatureValue;
+                        maxTemperatureValue = entry.value > maxTemperatureValue ? entry.value : maxTemperatureValue;
+                        temperatureUnit = entry.unit;
                         break;
                     case 'precipitation':
-                        totalPrecipitationValue += item.value;
-                        precipitationUnit = item.unit;
+                        totalPrecipitationValue += entry.value;
+                        precipitationUnit = entry.unit;
                         break;
                     case 'wind speed':
-                        windSpeedSum += item.value;
+                        windSpeedSum += entry.value;
                         windSpeedCount += 1;
-                        windSpeedUnit = item.unit;
+                        windSpeedUnit = entry.unit;
                         break;
                 }
             });
@@ -54,11 +57,18 @@ function updateWeatherData() {
             maxTemperatureDiv.textContent = `Max Temperature: ${maxTemperatureValue} ${temperatureUnit}`;
             totalPrecipitationDiv.textContent = `Total Precipitation: ${totalPrecipitation} ${precipitationUnit}`;
             averageWindSpeedDiv.textContent = `Average Wind Speed: ${averageWindSpeed} ${windSpeedUnit}`;
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-}
+        } else {
+            console.error('Error fetching data:', xmlRequest.statusText);
+        }
+    
+    };
+
+    xmlRequest.onerror = function () {
+        console.error('Network error occurred');
+    };
+
+    xmlRequest.send();
+};
 
 citySelector.addEventListener('change', () => {
     citySelector.value;

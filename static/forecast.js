@@ -5,12 +5,25 @@ const citySelector = document.getElementById('city');
 let selectedHour = null;
 
 function fetchWeatherData() {
-    fetch(`http://localhost:8080/forecast/${citySelector.value}`)
-    .then(response => response.json())
-    .then(data => {
-        displayHourlyForecast(data, selectedHour? selectedHour : new Date().getHours());  
-    })
-    .catch(error => console.error('Error fetching forecast data:', error));
+    const xmlRequest = new XMLHttpRequest();
+    xmlRequest.open('GET', `http://localhost:8080/forecast/${citySelector.value}`, true);
+
+    xmlRequest.onreadystatechange = function () {
+        if (xmlRequest.readyState === 4) {
+            if (xmlRequest.status === 200) {
+                const data = JSON.parse(xmlRequest.responseText);
+                displayHourlyForecast(data, selectedHour ? selectedHour : new Date().getHours());
+            } else {
+                console.error('Error fetching forecast data:', xmlRequest.statusText);
+            }
+        }
+    };
+    
+    xmlRequest.onerror = function () {
+        console.error('Network error occurred');
+    };
+
+    xmlRequest.send();
 }
 
 function displayHourlyForecast(data, selectedHour) {
